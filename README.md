@@ -1,16 +1,22 @@
 # timeago.js
 
-> **timeago.js** is a simple library (less then `2 kb`) to used to format datetime with `*** time ago` statement. eg: '3 hours ago'.
+> **timeago.js** is a simple library (less than `2 kb`) that is used to format datetime with `*** time ago` statement. eg: '3 hours ago'.
 
  - Localization supported.
  - Time `ago` and time `in` supported.
  - Real-time render supported.
- - npm and browser supported.
+ - Nodejs and browserjs supported.
  - Well tested.
 
-[Official website](http://timeago.org/). 中文版说明文档[点这里](README_zh.md)。 React version here: [timeago-react](https://github.com/hustcc/timeago-react). Python version here: [timeago](https://github.com/hustcc/timeago).
+[Official website](https://timeago.org/). 中文版说明文档[点这里](README_zh.md)。 React version here: [timeago-react](https://github.com/hustcc/timeago-react). Python version here: [timeago](https://github.com/hustcc/timeago).
 
-[![Build Status](https://travis-ci.org/hustcc/timeago.js.svg?branch=master)](https://travis-ci.org/hustcc/timeago.js) [![npm](https://img.shields.io/npm/v/timeago.js.svg?style=flat-square)](https://www.npmjs.com/package/timeago.js) [![npm](https://img.shields.io/npm/dt/timeago.js.svg?style=flat-square)](https://www.npmjs.com/package/timeago.js) [![npm](https://img.shields.io/npm/l/timeago.js.svg?style=flat-square)](https://www.npmjs.com/package/timeago.js)
+[![Build Status](https://img.shields.io/travis/hustcc/timeago.js.svg)](https://travis-ci.org/hustcc/timeago.js)
+[![Coverage Status](https://coveralls.io/repos/github/hustcc/timeago.js/badge.svg?branch=master)](https://coveralls.io/github/hustcc/timeago.js?branch=master)
+[![gzip](https://img.badgesize.io/https://unpkg.com/timeago.js/dist/timeago.min.js?compression=gzip)](https://unpkg.com/timeago.js/dist/timeago.min.js)
+[![npm](https://img.shields.io/npm/v/timeago.js.svg)](https://www.npmjs.com/package/timeago.js)
+[![npm](https://img.shields.io/npm/dm/timeago.js.svg)](https://www.npmjs.com/package/timeago.js)
+[![npm](https://img.shields.io/npm/l/timeago.js.svg)](https://www.npmjs.com/package/timeago.js)
+
 
 Such as
 
@@ -41,30 +47,39 @@ in 2 years
 npm install timeago.js
 ```
 
-**2. import timeago.js**
+**2. Import timeago.js**
 
-
-UMD import is supported, then get global object: `timeago`.
+ES6/commonjs import style is supported.
 
 ```js
+// ES6
 import timeago from 'timeago.js';
 
-// or
-
+// commonjs
 var timeago = require("timeago.js");
 ```
 
-or link with `script` in html files:
+or link as a `script` in an html file and access global variable `timeago`.
 
 ```js
 <script src="dist/timeago.min.js"></script>
 ```
 
-**3. Use class `timeago`**
+or import in a typescript file.
+
+```ts
+import timeago from 'timeago.js';
+
+// or
+
+import timeago = require("timeago.js");
+```
+
+**3. Use `timeago` factory to create a new instance**
 
 ```js
-var timeago = timeago();
-timeago.format('2016-06-12')
+var timeagoInstance = timeago();
+timeagoInstance.format('2016-06-12');
 ```
 
 
@@ -72,67 +87,72 @@ timeago.format('2016-06-12')
 
 **1. Set relative date**
 
-`timeago` is relate to current date default. you can set it by yourself.
+`timeago` is relative to the current date by default. You can set it yourself.
 
 ```js
-var timeago = timeago('2016-06-10 12:12:12'); // set the relative date here.
-timeago.format('2016-06-12', 'zh_CN');
+var timeagoInstance = timeago('2016-06-10 12:12:12'); // set the relative date here.
+timeagoInstance.format('2016-06-12', 'zh_CN');
 ```
 
 **2. Use timestamp**
 
-```
-timeago().format(new Date().getTime() - 11 * 1000 * 60 * 60); // will get '11 hours ago'
+```js
+timeago().format(Date.now() - 11 * 1000 * 60 * 60); // returns '11 hours ago'
 ```
 
 **3. Automatic rendering**
 
 HTML code：
 ```html
-<div class="need_to_be_rendered" data-timeago="2016-06-30 09:20:00"></div>
+<div class="needs_to_be_rendered" datetime="2016-06-30 09:20:00"></div>
 ```
 js code
 ```js
-// use render to render it realtime
-timeago().render(document.querySelectorAll('.need_to_be_render'), 'zh_CN');
-// or cancel realtime render
-timeago().cancel()
+var timeagoInstance = timeago();
+var nodes = document.querySelectorAll('.needs_to_be_rendered');
+// use render method to render nodes in real time
+timeagoInstance.render(nodes, 'zh_CN');
+// cancel real-time render for every node
+timeago.cancel()
+// or for the specific one
+timeago.cancel(nodes[0])
 ```
 
-The input API `render` should be DOM object/array, support pure Javascript, Node, and jQuery DOM object.
+The input for `render` method should be DOM object/array, pure javascript DOM node or jQuery DOM object.
 
-The API `cancel` will clear all the render timers and release all the resources.
+The `cancel` method clears all the render timers and release all resources of the instance. Optionally it accepts a single node to cancel timer just for it.
 
-The DOM object should have the attribute `data-timeago` with date formated string.
+The DOM object should have the attribute `datetime` or `data-timeago` with date formatted string.
 
 **4. Localization**
 
 Default locale is **`en`**, and the library supports `en` and `zh_CN`.
 
 ```js
-var timeago = timeago();
-timeago.format('2016-06-12', 'zh_CN');
+var timeagoInstance = timeago();
+timeagoInstance.format('2016-06-12', 'zh_CN');
 ```
 
-You can change the locale in the constructor or use the `setLocale` method;
+You can change the locale in the constructor or use the `setLocale` method:
 
 ```js
-var timeago = timeago(null, 'zh_CN');
+var timeagoInstance = timeago(currentDate, 'zh_CN');
 // or
-timeago().setLocale('zh_CN');
+timeago(currentDate).setLocale('zh_CN');
 ```
 
 **5. Register local language**
 
-You can `register` you own language. All keys are needed. e.g.
+You can register your own language via a static method `register`. Usage example:
 
 ```js
 // the local dict example is below.
-var test_local_dict = function(number, index) {
+var test_local_dict = function(number, index, total_sec) {
   // number: the timeago / timein number;
   // index: the index of array below;
+  // total_sec: total seconds between date to be formatted and today's date;
   return [
-    ['just now', 'a while'],
+    ['just now', 'right now'],
     ['%s seconds ago', 'in %s seconds'],
     ['1 minute ago', 'in 1 minute'],
     ['%s minutes ago', 'in %s minutes'],
@@ -148,26 +168,28 @@ var test_local_dict = function(number, index) {
     ['%s years ago', 'in %s years']
   ][index];
 };
-
-var timeago = timeago();
+// register your locale with timeago
 timeago.register('test_local', test_local_dict);
-
-timeago.format('2016-06-12', 'test_local');
+// use the locale with timeago instance
+var timeagoInstance = timeago();
+timeagoInstance.format('2016-06-12', 'test_local');
 ```
 
-You can see [locales](locales) dir for more locales. Please submit a GitHub pull request for corrections or additional languages, and add the locale key into `tests/locales_test.js`.
+Check out more [locales](src/lang).
+
+[Locale contributions](#3-contributions) are welcomed, thank you for submitting a GitHub pull request for corrections or additional languages. ^_^~
 
 
 # 3. Contributions
 
-1. The website is base on [rmm5t/jquery-timeago](https://github.com/rmm5t/jquery-timeago) which is a nice and featured project but depends on jQuery.
+1. The website is based on [rmm5t/jquery-timeago](https://github.com/rmm5t/jquery-timeago) which is a nice and featured project but it depends on jQuery.
 
-2. **locale translations**: The library need the locale translations. You can:
+2. **locale translations**: The library needs more locale translations. You can:
 
- - Open an issue to write the locale translations, how to ? see [here](https://github.com/hustcc/timeago.js/blob/master/locales/en.js).
- - Or pull a request, please **test** it before by exec `npm test` or `node tests/locales_test.js`.
+ - Open an issue to write the locale translations, or submit a pull request. How to ? see [en's translation](src/lang/en.js).
+ - Please **test** the locale by exec `npm test`. How to write testcase, see [en's test cases](__tests__/lang/en.spec.js).
 
 
 # 4. LICENSE
 
-MIT
+MIT@[https://github.com/hustcc](hustcc)

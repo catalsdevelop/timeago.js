@@ -1,6 +1,6 @@
 # timeago.js
 
-> **timeago.js** 是一个非常简洁、轻量级、不到 `2kb` 的很简洁的Javascript库，用来将datetime时间转化成类似于`*** 时间前`的描述字符串，例如：“3小时前”。
+> **timeago.js** 是一个非常简洁、轻量级、不到 `2kb` 的很简洁的 Javascript 库，用来将 datetime 时间转化成类似于`*** 时间前`的描述字符串，例如：“3小时前”。
 
  - 本地化支持，默认自带中文和英文语言，基本够用；
  - 之前 xxx 时间前、xxx 时间后；
@@ -8,9 +8,15 @@
  - 支持npm方式和浏览器script方式；
  - 测试用例完善，执行良好；
 
-[Official website](http://timeago.org/)。关于Python的版本，可以看 [timeago](https://github.com/hustcc/timeago).
+[Official website](https://timeago.org/)。关于Python的版本，可以看 [timeago](https://github.com/hustcc/timeago).
 
-[![Build Status](https://travis-ci.org/hustcc/timeago.js.svg?branch=master)](https://travis-ci.org/hustcc/timeago.js) [![npm](https://img.shields.io/npm/v/timeago.js.svg?style=flat-square)](https://www.npmjs.com/package/timeago.js) [![npm](https://img.shields.io/npm/dt/timeago.js.svg?style=flat-square)](https://www.npmjs.com/package/timeago.js) [![npm](https://img.shields.io/npm/l/timeago.js.svg?style=flat-square)](https://www.npmjs.com/package/timeago.js)
+[![Build Status](https://img.shields.io/travis/hustcc/timeago.js.svg)](https://travis-ci.org/hustcc/timeago.js)
+[![Coverage Status](https://coveralls.io/repos/github/hustcc/timeago.js/badge.svg?branch=master)](https://coveralls.io/github/hustcc/timeago.js?branch=master)
+[![gzip](https://img.badgesize.io/https://unpkg.com/timeago.js/dist/timeago.min.js?compression=gzip)](https://unpkg.com/timeago.js/dist/timeago.min.js)
+[![npm](https://img.shields.io/npm/v/timeago.js.svg)](https://www.npmjs.com/package/timeago.js)
+[![npm](https://img.shields.io/npm/dm/timeago.js.svg)](https://www.npmjs.com/package/timeago.js)
+[![npm](https://img.shields.io/npm/l/timeago.js.svg)](https://www.npmjs.com/package/timeago.js)
+
 
 ```
 刚刚
@@ -41,7 +47,6 @@ npm install timeago.js
 
 **2. 引入 timeago.js**
 
-
 使用import引入，然后可以得到一个全局变量: `timeago`.
 
 ```js
@@ -58,6 +63,16 @@ var timeago = require("timeago.js");
 <script src="dist/timeago.min.js"></script>
 ```
 
+或者在 typescript 文件中引入.
+
+```ts
+import timeago from 'timeago.js';
+
+// or
+
+import timeago = require("timeago.js");
+```
+
 **3. 使用 `timeago` 类**
 
 ```js
@@ -68,19 +83,20 @@ timeago.format('2016-06-12')
 
 # 高级特性使用
 
+
 **1. 设置相对日期**
 
-`timeago` 默认是相对于当前事件的，当然也可以自己设置相对的时间，如下所示：
+`timeago` 默认是相对于当前时间的，当然也可以自己设置相对的时间，如下所示：
 
 ```js
-var timeago = timeago('2016-06-10 12:12:12'); // 在这里设置相对时间
-timeago.format('2016-06-12', 'zh_CN');
+var timeagoInstance = timeago(null, '2016-06-10 12:12:12'); // 在这里设置相对时间
+timeagoInstance.format('2016-06-12', 'zh_CN');
 ```
 
 **2. 格式化时间戳，字符串**
 
-```
-timeago().format(new Date().getTime() - 11 * 1000 * 60 * 60); // will get '11 hours ago'
+```js
+timeago().format(Date.now() - 11 * 1000 * 60 * 60); // will get '11 hours ago'
 ```
 
 **3. 自动实时渲染**
@@ -91,45 +107,47 @@ HTML为：
 ```
 Js代码为：
 ```js
-timeago().render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
+var timeagoInstance = timeago();
+timeagoInstance.render(document.querySelectorAll('.need_to_be_rendered'), 'zh_CN');
 
 // or
 
-timeago().cancel()
+timeagoInstance.cancel()
 ```
 
 API方法 `render` 可以传入一个DOM节点或者数据，标示需要实时渲染这些节点。
 
-API方法 `cancel` 调用之后会清除所有的定时器方法，并且释放所有定时器资源。
+API方法 `cancel` 调用之后会清除所有的定时器方法，并且释放所有定时器资源。当然也可以传入一个 node 节点，仅仅曲线这个节点的定时器方法。
 
-被渲染的节点必须要有`data-timeago`属性，属性值为日期格式的字符串。
+被渲染的节点必须要有 `datetime` 或者 `data-timeago` 属性，属性值为日期格式的字符串。
 
 **4. 本地化**
 
 默认的语言是英文 **`en`**, 这个库自带语言有 `en` and `zh_CN` （英文和中文）.
 
 ```js
-var timeago = timeago();
-timeago.format('2016-06-12', 'zh_CN');
+var timeagoInstance = timeago();
+timeagoInstance.format('2016-06-12', 'zh_CN');
 ```
 
 可以在构造函数中传入默认语言，也可以调用 `setLocale` 方法。
 
 ```js
-var timeago = timeago(null, 'zh_CN');
+var timeagoInstance = timeago(currentDate, 'zh_CN');
 // or
 timeago().setLocale('zh_CN');
 ```
 
 **5. 注册本地语言**
 
-你可以自己自定义注册 `register` 你自己的语言. 如下所示，所有的键值都必须存在，不然可能会出错. e.g.
+你可以自己自定义注册 `register` 你自己的语言。 如下所示，所有的键值都必须存在，不然可能会出错。 e.g.
 
 ```js
 // 本地化的字典样式
-var test_local_dict = function(number, index) {
-  // number: xxx 时间前 / 后的数字;
-  // index: 下面数组的索引号;
+var test_local_dict = function(number, index, total_sec) {
+  // number：xxx 时间前 / 后的数字；
+  // index：下面数组的索引号；
+  // total_sec：时间间隔的总秒数；
   return [
     ['just now', 'a while'],
     ['%s seconds ago', 'in %s seconds'],
@@ -148,13 +166,13 @@ var test_local_dict = function(number, index) {
   ][index];
 };
 
-var timeago = timeago();
 timeago.register('test_local', test_local_dict);
 
-timeago.format('2016-06-12', 'test_local');
+var timeagoInstance = timeago();
+timeagoInstance.format('2016-06-12', 'test_local');
 ```
-欢迎发起 PR 添加一些确实的 locale 语言，当然请注意，将 locale 添加到 `tests/locales_test.js` 文件中做一个简单的测试。
+欢迎发起 PR 添加一些缺失的 locale 语言，当然请注意，在 `__tests__/lang` 目录中添加对应的测试用例。
 
 # LICENSE
 
-MIT
+MIT@[https://github.com/hustcc](hustcc)
