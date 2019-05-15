@@ -8,11 +8,10 @@ import babel from 'rollup-plugin-babel';
 import resolve from 'rollup-plugin-node-resolve';
 
 export default {
-  input: 'src/index.js',
+  input: 'src/all.js',
   output: {
-    file: 'dist/timeago.min.js',
-    name: 'timeago',
-    format: 'umd',
+    file: 'dist/timeago.locales.min.js',
+    format: 'iife',
   },
   plugins: [
     resolve(),

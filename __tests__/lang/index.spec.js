@@ -1,9 +1,9 @@
 /**
- * Created by hustccon 18/5/24.
- * Contract: i@hust.cc
+ * Created by hustcc on 18/5/24.
+ * Contact: i@hust.cc
  */
 
-import langs from '../../src/lang';
+import * as langs from '../../src/lang';
 
 describe('langs', () => {
   test('locales shoule be in dict order', () => {
